@@ -22,13 +22,15 @@
  	// r1 = number of bytes to read
 read_user_input:
 	push {lr}
-	push {r7}
+	push {r4-r11}
 	push {r1}
+	push {r0}
 	mov r7, #0x3
 	mov	r0, #0x0
 	pop {r1}
+	pop {r2}
 	svc 0x0
-	pop {r7}
+	pop {r4-r11}
 	bx  lr
 
 media:
@@ -155,15 +157,16 @@ main:
 	ldr r0, =first
 	ldr r1, =#0x6
 	bl read_user_input @ llamada a read_user_input
-	bl ascii_to_int
-	@ str r0, [r7, #8]
 
-	@ ldr	r3, [r7] @ asignación del valor
-	@ lsls	r3, r3, #2
-	@ add	r2, r7, #56
-	@ add	r3, r3, r2
-	@ movs	r2, r0
-	@ str	r2, [r3, #-48]
+	ldr r0, =first
+	bl ascii_to_int
+
+	ldr	r3, [r7] @ asignación del valor
+	lsls	r3, r3, #2
+	add	r2, r7, #56
+	add	r3, r3, r2
+	movs	r2, r0 @aquí se asigna
+	str	r2, [r3, #-48]
 
 	ldr	r3, [r7] @i++
 	adds	r3, r3, #1
@@ -199,10 +202,6 @@ main:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",%progbits
-
-.section .data
-
-first:
-	.skip 8
-second:	
-	.skip 8
+	.section .data
+	first:
+		.skip 8
