@@ -17,22 +17,6 @@
 	.thumb_func
 	.fpu softvfp
 	.type	media, %function
-
-	// r0 = buffer to write
- 	// r1 = number of bytes to read
-read_user_input:
-	push {lr}
-	push {r4-r11}
-	push {r1}
-	push {r0}
-	mov r7, #0x3
-	mov	r0, #0x0
-	pop {r1}
-	pop {r2}
-	svc 0x0
-	pop {r4-r11}
-	bx  lr
-
 media:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -41,10 +25,10 @@ media:
 	sub	sp, sp, #20
 	add	r7, sp, #0
 	str	r0, [r7, #4]
-	str	r1, [r7] 
-	movs	r3, #0 @ sum = 0
+	str	r1, [r7]
+	movs	r3, #0
 	str	r3, [r7, #8]
-	movs	r3, #0 @ i = 0
+	movs	r3, #0
 	str	r3, [r7, #12]
 	b	.L2
 .L3:
@@ -62,8 +46,8 @@ media:
 .L2:
 	ldr	r2, [r7, #12]
 	ldr	r3, [r7]
-	cmp	r2, r3 
-	blt	.L3 @ i < size
+	cmp	r2, r3
+	blt	.L3
 	ldr	r2, [r7, #8]
 	ldr	r3, [r7]
 	sdiv	r3, r2, r3
@@ -81,7 +65,6 @@ media:
 	.thumb_func
 	.fpu softvfp
 	.type	ascii_to_int, %function
-
 ascii_to_int:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -139,7 +122,6 @@ ascii_to_int:
 	.thumb_func
 	.fpu softvfp
 	.type	main, %function
-
 main:
 	@ args = 0, pretend = 0, frame = 56
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -154,28 +136,19 @@ main:
 	str	r3, [r7]
 	b	.L10
 .L11:
-	ldr r0, =first
-	ldr r1, =#0x6
-	bl read_user_input @ llamada a read_user_input
-
-	ldr r0, =first
-	bl ascii_to_int
-
-	ldr	r3, [r7] @ asignación del valor
+	ldr	r3, [r7]
 	lsls	r3, r3, #2
 	add	r2, r7, #56
 	add	r3, r3, r2
-	mov	r2, r0 @aquí se asigna
+	movs	r2, #0
 	str	r2, [r3, #-48]
-
-	ldr	r3, [r7] @i++
+	ldr	r3, [r7]
 	adds	r3, r3, #1
 	str	r3, [r7]
 .L10:
 	ldr	r3, [r7]
 	cmp	r3, #10
 	ble	.L11
-
 	add	r3, r7, #8
 	movs	r1, #11
 	mov	r0, r3
@@ -202,6 +175,3 @@ main:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",%progbits
-	.section .data
-	first:
-		.skip 8
