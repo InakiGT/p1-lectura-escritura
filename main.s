@@ -21,18 +21,15 @@
 	// r0 = buffer to write
  	// r1 = number of bytes to read
 read_user_input:
+	push {lr}
 	push {r7}
-	sub sp, sp, #12
-	add r7, sp, #0
-	mov r3, #0x3
-	str r3, [r7, #4]
-	mov r2, #0x0
-	str r3, [r7, #8]
+	push {r1}
+	mov r7, #0x3
+	mov	r0, #0x0
+	pop {r1}
 	svc 0x0
-	mov	r0, r3
-	adds	r7, r7, #12
-	mov	sp, r7
 	pop {r7}
+	bx  lr
 
 media:
 	@ args = 0, pretend = 0, frame = 16
@@ -155,8 +152,19 @@ main:
 	str	r3, [r7]
 	b	.L10
 .L11:
-	bl read_user_input@ llamada a read_user_input
+	ldr r0, =first
+	ldr r1, =#0x6
+	bl read_user_input @ llamada a read_user_input
 	bl ascii_to_int
+	@ str r0, [r7, #8]
+
+	@ ldr	r3, [r7] @ asignación del valor
+	@ lsls	r3, r3, #2
+	@ add	r2, r7, #56
+	@ add	r3, r3, r2
+	@ movs	r2, r0
+	@ str	r2, [r3, #-48]
+
 	ldr	r3, [r7] @i++
 	adds	r3, r3, #1
 	str	r3, [r7]
@@ -170,7 +178,7 @@ main:
 	mov	r0, r3
 	bl	media
 	str	r0, [r7, #4]
-	movs	r3, #0
+	ldr	r3, [r7, #8]
 	ldr	r2, .L14
 	ldr	r1, [r2]
 	ldr	r2, [r7, #52]
@@ -191,3 +199,10 @@ main:
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
 	.section	.note.GNU-stack,"",%progbits
+
+.section .data
+
+first:
+	.skip 8
+second:	
+	.skip 8

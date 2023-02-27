@@ -145,14 +145,14 @@ main:
 	add	r3, r3, r2
 	movs	r2, #1
 	str	r2, [r3, #-48]
-
-	ldr	r3, [r7] @i++
+	ldr	r3, [r7]
 	adds	r3, r3, #1
 	str	r3, [r7]
 .L10:
 	ldr	r3, [r7]
 	cmp	r3, #10
 	ble	.L11
+	
 	add	r3, r7, #8
 	movs	r1, #11
 	mov	r0, r3

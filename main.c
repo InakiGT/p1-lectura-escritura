@@ -21,7 +21,7 @@ int ascii_to_int(char number[]) {
 int main() {
     int numbers[SIZE];
     for(int i = 0; i < SIZE; i++) {
-        numbers[i] = 1;
+        numbers[i] = 0;
     }
     int out = media(numbers, SIZE);
     return ascii_to_int("12");
