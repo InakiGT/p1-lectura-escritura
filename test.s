@@ -17,23 +17,6 @@
 	.thumb_func
 	.fpu softvfp
 	.type	media, %function
-
-	// r0 = buffer to write
- 	// r1 = number of bytes to read
-read_user_input:
-	push {r7}
-	sub sp, sp, #12
-	add r7, sp, #0
-	mov r3, #0x3
-	str r3, [r7, #4]
-	mov r2, #0x0
-	str r3, [r7, #8]
-	svc 0x0
-	mov	r0, r3
-	adds	r7, r7, #12
-	mov	sp, r7
-	pop {r7}
-
 media:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -42,10 +25,10 @@ media:
 	sub	sp, sp, #20
 	add	r7, sp, #0
 	str	r0, [r7, #4]
-	str	r1, [r7] 
-	movs	r3, #0 @ sum = 0
+	str	r1, [r7]
+	movs	r3, #0
 	str	r3, [r7, #8]
-	movs	r3, #0 @ i = 0
+	movs	r3, #0
 	str	r3, [r7, #12]
 	b	.L2
 .L3:
@@ -63,8 +46,8 @@ media:
 .L2:
 	ldr	r2, [r7, #12]
 	ldr	r3, [r7]
-	cmp	r2, r3 
-	blt	.L3 @ i < size
+	cmp	r2, r3
+	blt	.L3
 	ldr	r2, [r7, #8]
 	ldr	r3, [r7]
 	sdiv	r3, r2, r3
@@ -82,7 +65,6 @@ media:
 	.thumb_func
 	.fpu softvfp
 	.type	ascii_to_int, %function
-
 ascii_to_int:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -131,6 +113,9 @@ ascii_to_int:
 	.section	.rodata
 	.align	2
 .LC0:
+	.ascii	"12\000"
+	.align	2
+.LC1:
 	.word	__stack_chk_guard
 	.text
 	.align	1
@@ -140,7 +125,6 @@ ascii_to_int:
 	.thumb_func
 	.fpu softvfp
 	.type	main, %function
-
 main:
 	@ args = 0, pretend = 0, frame = 56
 	@ frame_needed = 1, uses_anonymous_args = 0
@@ -155,8 +139,13 @@ main:
 	str	r3, [r7]
 	b	.L10
 .L11:
-	bl read_user_input@ llamada a read_user_input
-	bl ascii_to_int
+	ldr	r3, [r7]
+	lsls	r3, r3, #2
+	add	r2, r7, #56
+	add	r3, r3, r2
+	movs	r2, #1
+	str	r2, [r3, #-48]
+
 	ldr	r3, [r7] @i++
 	adds	r3, r3, #1
 	str	r3, [r7]
@@ -164,13 +153,14 @@ main:
 	ldr	r3, [r7]
 	cmp	r3, #10
 	ble	.L11
-
 	add	r3, r7, #8
 	movs	r1, #11
 	mov	r0, r3
 	bl	media
 	str	r0, [r7, #4]
-	movs	r3, #0
+	ldr	r0, .L14+4
+	bl	ascii_to_int
+	mov	r3, r0
 	ldr	r2, .L14
 	ldr	r1, [r2]
 	ldr	r2, [r7, #52]
@@ -187,6 +177,7 @@ main:
 .L15:
 	.align	2
 .L14:
+	.word	.LC1
 	.word	.LC0
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
