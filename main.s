@@ -18,6 +18,41 @@
 	.fpu softvfp
 	.type	media, %function
 
+my_atoi:
+	push {lr}
+	push {r4-r11}
+	mov r2, #0x0 //; our string length counter 
+	mov r5, #0x0 //; end state counter value
+	mov r6, #1
+	mov r7, #10
+
+_string_length_loop:
+	ldrb r8, [r0]
+	cmp r8, #0xa 
+	beq _count
+	add r0, r0, #1
+	add r2, r2, #1
+	b _string_length_loop
+
+_count:
+	sub r0, r0, #1
+	ldrb r8, [r0] //; the first number in the sting
+	sub r8, r8, #0x30
+	mul r4, r8, r6
+	mov r8, r4
+	mul r4, r6, r7 //; increment the placeholder 
+	mov r7, r4
+	add r5, r5, r8
+	sub r2, r2, #1
+	cmp r2, #0x0
+	beq _leave
+	b _count
+
+_leave:
+	mov r0, r5
+	pop {r4-r11}
+	bx lr
+
 	// r0 = buffer to write
  	// r1 = number of bytes to read
 read_user_input:
@@ -159,7 +194,8 @@ main:
 	bl read_user_input @ llamada a read_user_input
 
 	ldr r0, =first
-	bl ascii_to_int
+	bl my_atoi
+	str r0, [r7, #12]
 
 	ldr	r3, [r7] @ asignación del valor
 	lsls	r3, r3, #2

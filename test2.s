@@ -113,6 +113,9 @@ ascii_to_int:
 	.section	.rodata
 	.align	2
 .LC0:
+	.ascii	"12\000"
+	.align	2
+.LC1:
 	.word	__stack_chk_guard
 	.text
 	.align	1
@@ -154,7 +157,9 @@ main:
 	mov	r0, r3
 	bl	media
 	str	r0, [r7, #4]
-	ldr	r3, [r7, #4]
+	ldr	r0, .L14+4
+	bl	ascii_to_int
+	mov	r3, r0
 	ldr	r2, .L14
 	ldr	r1, [r2]
 	ldr	r2, [r7, #52]
@@ -171,6 +176,7 @@ main:
 .L15:
 	.align	2
 .L14:
+	.word	.LC1
 	.word	.LC0
 	.size	main, .-main
 	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"

@@ -24,5 +24,5 @@ int main() {
         numbers[i] = 0;
     }
     int out = media(numbers, SIZE);
-    return out;
+    return ascii_to_int("12");
 }
