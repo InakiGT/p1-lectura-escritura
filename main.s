@@ -18,6 +18,7 @@
 	.fpu softvfp
 	.type	media, %function
 
+@función de prueba
 my_atoi:
 	push {lr}
 	push {r4-r11}
