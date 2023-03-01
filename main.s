@@ -18,15 +18,15 @@
 	.fpu softvfp
 	.type	media, %function
 
-@función de prueba
+
 my_atoi:
 	push {lr}
 	push {r4-r11}
 	mov r2, #0x0 //; our string length counter 
-	mov r5, #0x0 //; end state counter value
+	mov r3, #0x0 //; end state counter value
 	mov r6, #1
-	mov r7, #10
-
+	mov r9, #10
+	
 _string_length_loop:
 	ldrb r8, [r0]
 	cmp r8, #0xa 
@@ -34,40 +34,50 @@ _string_length_loop:
 	add r0, r0, #1
 	add r2, r2, #1
 	b _string_length_loop
-
+	
 _count:
 	sub r0, r0, #1
 	ldrb r8, [r0] //; the first number in the sting
 	sub r8, r8, #0x30
 	mul r4, r8, r6
 	mov r8, r4
-	mul r4, r6, r7 //; increment the placeholder 
-	mov r7, r4
-	add r5, r5, r8
+	mul r4, r6, r9 //; increment the placeholder 
+	mov r6, r4
+	add r3, r3, r8
 	sub r2, r2, #1
 	cmp r2, #0x0
 	beq _leave
 	b _count
 
 _leave:
-	mov r0, r5
+	mov r0, r3
 	pop {r4-r11}
 	bx lr
 
-	// r0 = buffer to write
- 	// r1 = number of bytes to read
 read_user_input:
-	push {lr}
-	push {r4-r11}
-	push {r1}
-	push {r0}
-	mov r7, #0x3
+	push {r7}
+	sub sp, sp, #12
+	add r7, sp, #0
+	str r0, [r7, #4]
+	str r1, [r7, #8]
+
+	mov r4, r7
+	ldr r2, [r7, #8]
+	ldr r1, [r7, #4]
 	mov	r0, #0x0
-	pop {r1}
-	pop {r2}
+	mov r7, #0x3
 	svc 0x0
-	pop {r4-r11}
+
+	mov r3, r0
+	add r7, #0
+	mov r7, r4 @ Extrae el valor del sp
+
+	mov r0, r3
+	adds r7, r7, #12
+	mov sp, r7
+	pop {r7}
 	bx  lr
+
 
 media:
 	@ args = 0, pretend = 0, frame = 16
@@ -212,7 +222,6 @@ main:
 	ldr	r3, [r7]
 	cmp	r3, #10
 	ble	.L11
-
 	add	r3, r7, #8
 	movs	r1, #11
 	mov	r0, r3
@@ -242,3 +251,4 @@ main:
 	.section .data
 	first:
 		.skip 8
+		
