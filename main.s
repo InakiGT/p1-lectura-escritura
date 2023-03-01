@@ -26,7 +26,7 @@ my_atoi:
 	mov r3, #0x0 //; end state counter value
 	mov r6, #1
 	mov r9, #10
-	
+
 _string_length_loop:
 	ldrb r8, [r0]
 	cmp r8, #0xa 
@@ -78,6 +78,54 @@ read_user_input:
 	pop {r7}
 	bx  lr
 
+int_to_string:
+	push {lr}
+	push {r4-r11}
+	mov r2, #0x0
+	mov r3, #10000
+	mov r7, #10
+
+_loop:
+	mov r4, #0x0
+	udiv r4, r0, r3
+	add r4, r4, #0x30
+
+	ldr r5, =sum
+	add r5, r5, r2
+	strb r4, [r5]
+	add r2, r2, #1
+
+	sub r4, r4, #0x30
+	mul r6, r4, r3
+	sub r0, r0, r6
+
+	udiv r6, r3, r7
+	mov r3, r6
+	cmp r3, #0
+	beq _leave_int
+	b _loop
+
+_leave_int:
+	mov r4, #0xa
+	ldr r5, =sum
+	add r5, r5, r2
+	add r5, r5, #1
+	strb r4, [r5]
+	pop {r4-r11}
+	bx lr
+
+display:
+	push {lr}
+	push {r4-r11}
+
+	mov r7, #0x4
+	mov r0, #0x1
+	ldr r1, =sum
+	mov r2, #0x8
+	svc 0x0
+
+	pop {r4-r11}
+	bx lr
 
 media:
 	@ args = 0, pretend = 0, frame = 16
@@ -226,8 +274,14 @@ main:
 	movs	r1, #11
 	mov	r0, r3
 	bl	media
+
+	@ Cálculamos la media
 	str	r0, [r7, #4]
-	ldr	r3, [r7, #4]
+	ldr	r0, [r7, #4]
+	bl int_to_string
+
+	bl display
+
 	ldr	r2, .L14
 	ldr	r1, [r2]
 	ldr	r2, [r7, #52]
@@ -250,5 +304,7 @@ main:
 	.section	.note.GNU-stack,"",%progbits
 	.section .data
 	first:
+		.skip 8
+	sum:
 		.skip 8
 		
