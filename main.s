@@ -69,7 +69,6 @@ read_user_input:
 	svc 0x0
 
 	mov r3, r0
-	add r7, #0
 	mov r7, r4 @ Extrae el valor del sp
 
 	mov r0, r3
@@ -115,16 +114,26 @@ _leave_int:
 	bx lr
 
 display:
-	push {lr}
-	push {r4-r11}
+	push {r7}
+	sub sp, sp, #12
+	add r7, sp, #0
+	str r0, [r7, #4]
 
-	mov r7, #0x4
+	mov r4, r7
+	ldr r1, [r7, #4]
 	mov r0, #0x1
-	ldr r1, =sum
+	mov r7, #0x4	
+
 	mov r2, #0x8
 	svc 0x0
+	
+	mov r3, r0
+	mov r7, r4
 
-	pop {r4-r11}
+	mov r0, r3
+	adds r7, r7, #12
+	mov sp, r7 
+	pop {r7}
 	bx lr
 
 media:
@@ -280,6 +289,7 @@ main:
 	ldr	r0, [r7, #4]
 	bl int_to_string
 
+	ldr r0, =sum
 	bl display
 
 	ldr	r2, .L14
