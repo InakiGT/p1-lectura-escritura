@@ -20,41 +20,65 @@
 
 
 my_atoi:
-	push {lr}
-	push {r4-r11}
-	mov r2, #0x0 //; our string length counter 
-	mov r3, #0x0 //; end state counter value
-	mov r6, #1
-	mov r9, #10
+	@ Prólogo de my_atoi, 24 bytes
+	push {r7}
+	sub sp, sp, #20
+	add r7, sp, #0
 
-_string_length_loop:
+	str r0, [r7]
+	mov r2, #0x0 //; our string length counter 
+	str r2, [r7, #4]
+	mov r3, #0x0 //; end state counter value
+	str r3, [r7, #8]
+	mov r6, #1
+	str r6, [r7, #12]
+	mov r9, #10
+	str r9, [r7, #16]
+.string_length_loop: @ No son funciones, son etiquetas
+	ldr r0, [r7]
 	ldrb r8, [r0]
 	cmp r8, #0xa 
-	beq _count
+	beq .count
+	ldr r0, [r7]
 	add r0, r0, #1
+	str r0, [r7]
+	ldr r2, [r7, #4]
 	add r2, r2, #1
-	b _string_length_loop
-	
-_count:
+	str r2, [r7, #4]
+	b .string_length_loop
+.count:
 	sub r0, r0, #1
+	str r0, [r7]
 	ldrb r8, [r0] //; the first number in the sting
 	sub r8, r8, #0x30
+	ldr r6, [r7, #12]
 	mul r4, r8, r6
 	mov r8, r4
+	ldr r6, [r7, #12]
+	ldr r9, [r7, #16]
 	mul r4, r6, r9 //; increment the placeholder 
 	mov r6, r4
+	str r6, [r7, #12]
+	ldr r3, [r7, #8]
 	add r3, r3, r8
+	str r3, [r7, #8]
+	ldr r2, [r7, #4]
 	sub r2, r2, #1
+	str r2, [r7, #4]
+	ldr r2, [r7, #4]
 	cmp r2, #0x0
-	beq _leave
-	b _count
-
-_leave:
+	beq .leave
+	b .count
+.leave:
+	@ Epílogo de my_atoi
 	mov r0, r3
-	pop {r4-r11}
+	adds r7, r7, #20
+	mov sp, r7
+	pop {r7}
 	bx lr
 
 read_user_input:
+	@ Prólogo de read_user_input, 16 bytes
 	push {r7}
 	sub sp, sp, #12
 	add r7, sp, #0
@@ -71,6 +95,7 @@ read_user_input:
 	mov r3, r0
 	mov r7, r4 @ Extrae el valor del sp
 
+	@ Epílogo de read_user_input
 	mov r0, r3
 	adds r7, r7, #12
 	mov sp, r7
@@ -78,49 +103,79 @@ read_user_input:
 	bx  lr
 
 int_to_string:
-	push {lr}
-	push {r4-r11}
-	mov r2, #0x0
+	@ Prólogo de int_to_string, 40 bytes
+	push {r7}
+	sub sp, sp, #36
+	add r7, sp, #0
+
+	str r0, [r7]
+	str r1, [r7, #4]
+	mov r3, #0x0
+	str r3, [r7, #8]
 	mov r3, #10000
-	mov r7, #10
-
-_loop:
-	mov r4, #0x0
+	str r3, [r7, #12]
+	mov r5, #10
+	str r5, [r7, #16]
+.loop:
+	ldr r3, [r7, #12]
 	udiv r4, r0, r3
+	str r4, [r7, #20]
+	ldr r4, [r7, #20]
 	add r4, r4, #0x30
+	str r4, [r7, #20]
 
-	ldr r5, =sum
-	add r5, r5, r2
-	strb r4, [r5]
-	add r2, r2, #1
+	ldr r3, [r7, #8]
+	ldr r1, [r7, #4]
+	add r1, r1, r3
+	strb r4, [r1]
+	str r4, [r7, #20]
+	ldr r3, [r7, #8]
+	add r3, r3, #1
+	str r3, [r7, #8]
 
+	ldr r4, [r7, #20]
 	sub r4, r4, #0x30
+	str r4, [r7, #20]
+	ldr r3, [r7, #12]
 	mul r6, r4, r3
+	str r6, [r7, #24]
+	ldr r6, [r7, #24]
 	sub r0, r0, r6
 
-	udiv r6, r3, r7
+	ldr r3, [r7, #12]
+	ldr r5, [r7, #16]
+	udiv r6, r3, r5
+	str r6, [r7, #28]
+	ldr r6, [r7, #28]
 	mov r3, r6
+	str r3, [r7, #12]
 	cmp r3, #0
-	beq _leave_int
-	b _loop
-
-_leave_int:
+	beq .leave_int
+	b .loop
+.leave_int:
 	mov r4, #0xa
-	ldr r5, =sum
-	add r5, r5, r2
-	add r5, r5, #1
-	strb r4, [r5]
-	pop {r4-r11}
+	ldr r3, [r7, #8]
+	ldr r1, [r7, #4]
+	add r1, r1, r3
+	add r1, r1, #1
+	strb r4, [r1]
+
+	@ Epílogo de int_to_string
+	mov r3, #0
+	mov r0, r3
+	adds r7, r7, #36
+	mov sp, r7
+	pop {r7}
 	bx lr
 
 display:
 	push {r7}
 	sub sp, sp, #12
 	add r7, sp, #0
-	str r0, [r7, #4]
+	str r0, [r7]
 
 	mov r4, r7
-	ldr r1, [r7, #4]
+	ldr r1, [r7]
 	mov r0, #0x1
 	mov r7, #0x4	
 
@@ -184,54 +239,6 @@ media:
 	.thumb_func
 	.fpu softvfp
 	.type	ascii_to_int, %function
-
-ascii_to_int:
-	@ args = 0, pretend = 0, frame = 16
-	@ frame_needed = 1, uses_anonymous_args = 0
-	@ link register save eliminated.
-	push	{r7}
-	sub	sp, sp, #20
-	add	r7, sp, #0
-	str	r0, [r7, #4]
-	movs	r3, #0
-	str	r3, [r7, #8]
-	movs	r3, #0
-	str	r3, [r7, #12]
-	b	.L6
-.L7:
-	ldr	r2, [r7, #8]
-	mov	r3, r2
-	lsls	r3, r3, #2
-	add	r3, r3, r2
-	lsls	r3, r3, #1
-	mov	r1, r3
-	ldr	r3, [r7, #12]
-	ldr	r2, [r7, #4]
-	add	r3, r3, r2
-	ldrb	r3, [r3]	@ zero_extendqisi2
-	subs	r3, r3, #48
-	add	r3, r3, r1
-	str	r3, [r7, #8]
-	ldr	r3, [r7, #12]
-	adds	r3, r3, #1
-	str	r3, [r7, #12]
-.L6:
-	ldr	r3, [r7, #12]
-	ldr	r2, [r7, #4]
-	add	r3, r3, r2
-	ldrb	r3, [r3]	@ zero_extendqisi2
-	cmp	r3, #0
-	bne	.L7
-	ldr	r3, [r7, #8]
-	mov	r0, r3
-	adds	r7, r7, #20
-	mov	sp, r7
-	@ sp needed
-	pop	{r7}
-	bx	lr
-	.size	ascii_to_int, .-ascii_to_int
-	.section	.rodata
-	.align	2
 .LC0:
 	.word	__stack_chk_guard
 	.text
@@ -287,6 +294,7 @@ main:
 	@ Cálculamos la media
 	str	r0, [r7, #4]
 	ldr	r0, [r7, #4]
+	ldr r1, =sum
 	bl int_to_string
 
 	ldr r0, =sum
@@ -317,4 +325,4 @@ main:
 		.skip 8
 	sum:
 		.skip 8
-		
+
