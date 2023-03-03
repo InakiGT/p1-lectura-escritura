@@ -270,7 +270,6 @@ main:
 
 	ldr r0, =first
 	bl my_atoi
-	str r0, [r7, #12]
 
 	ldr	r3, [r7] @ asignación del valor
 	lsls	r3, r3, #2
