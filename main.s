@@ -1,4 +1,4 @@
-	.arch armv7-m
+    .arch armv7-m
 	.eabi_attribute 20, 1
 	.eabi_attribute 21, 1
 	.eabi_attribute 23, 3
@@ -21,40 +21,41 @@
 
 my_atoi:
 	@ Prólogo de my_atoi, 24 bytes
-	push {r7}
-	sub sp, sp, #20
-	add r7, sp, #0
+	push {r7} //respaldo del apuntador del marco r7
+	sub sp, sp, #20 //Reserva de memoria multiplos de 8 
+	add r7, sp, #0  //mover el valor de sp a r7
 
-	str r0, [r7]
+	str r0, [r7] //respaldo de argumento de la función
 	mov r2, #0x0 //; our string length counter 
-	str r2, [r7, #4]
+	str r2, [r7, #4] //respaldo de argumento de la función
 	mov r3, #0x0 //; end state counter value
-	str r3, [r7, #8]
+	str r3, [r7, #8] //respaldo de argumento de la función
 	mov r6, #1
-	str r6, [r7, #12]
+	str r6, [r7, #12] //respaldo de argumento de la función
 	mov r9, #10
-	str r9, [r7, #16]
-.string_length_loop: @ No son funciones, son etiquetas
+	str r9, [r7, #16] //respaldo de argumento de la función
+	@ Cuerpo de la función  
+.string_length_loop: @ No son funciones, son etiquetas 
 	ldr r0, [r7]
 	ldrb r8, [r0]
 	cmp r8, #0xa 
 	beq .count
 	ldr r0, [r7]
-	add r0, r0, #1
+	add r0, r0, #1               //instrucciones longitud de la cadena 
 	str r0, [r7]
 	ldr r2, [r7, #4]
 	add r2, r2, #1
 	str r2, [r7, #4]
-	b .string_length_loop
+	b .string_length_loop  
 .count:
 	sub r0, r0, #1
 	str r0, [r7]
-	ldrb r8, [r0] //; the first number in the sting
+	ldrb r8, [r0] //; the first number in the string
 	sub r8, r8, #0x30
 	ldr r6, [r7, #12]
 	mul r4, r8, r6
 	mov r8, r4
-	ldr r6, [r7, #12]
+	ldr r6, [r7, #12]                                 //instrcciones del contador 
 	ldr r9, [r7, #16]
 	mul r4, r6, r9 //; increment the placeholder 
 	mov r6, r4
@@ -71,51 +72,53 @@ my_atoi:
 	b .count
 .leave:
 	@ Epílogo de my_atoi
-	mov r0, r3
-	adds r7, r7, #20
-	mov sp, r7
-	pop {r7}
-	bx lr
+	mov r0, r3   //el resultado de la funcion lo movemos a r0
+	adds r7, r7, #20 //los bytes reservados en el prologo lo sumamos a r7
+	mov sp, r7  //el valor del registro sp lo movemos a r7
+	pop {r7} //recuperación del valor previo del registro r7
+	bx lr //retornar el control a la función invoncadora(main)
+
 
 read_user_input:
 	@ Prólogo de read_user_input, 16 bytes
-	push {r7}
-	sub sp, sp, #12
-	add r7, sp, #0
-	str r0, [r7, #4]
-	str r1, [r7, #8]
-
+	push {r7} //respaldo del apuntador del marco r7
+	sub sp, sp, #12 //Reserva de memoria multiplos de 8 
+	add r7, sp, #0 //mover el valor de sp a r7
+	str r0, [r7, #4] //respaldo de argumento de la función
+	str r1, [r7, #8] //respaldo de argumento de la función
+	@ Cuerpo de la función  
 	mov r4, r7
 	ldr r2, [r7, #8]
 	ldr r1, [r7, #4]
 	mov	r0, #0x0
 	mov r7, #0x3
-	svc 0x0
-
+	svc 0x0  //llamda al sistema
 	mov r3, r0
-	mov r7, r4 @ Extrae el valor del sp
+	mov r7, r4 //extrae el valor del sp
 
 	@ Epílogo de read_user_input
-	mov r0, r3
-	adds r7, r7, #12
-	mov sp, r7
-	pop {r7}
-	bx  lr
+	mov r0, r3 //el resultado de la funcion lo movemos a r0
+	adds r7, r7, #12 //los bytes reservados en el prologo lo sumamos a r7
+	mov sp, r7 //el valor del registro sp lo modvemos a r7
+	pop {r7} //recuperación del valor previo del registro r7
+	bx  lr //retornar el control a la función invoncadora(main)
+
 
 int_to_string:
 	@ Prólogo de int_to_string, 40 bytes
-	push {r7}
-	sub sp, sp, #36
-	add r7, sp, #0
+	push {r7} //respaldo del apuntador del marco r7
+	sub sp, sp, #36 //Reserva de memoria multiplos de 8 
+	add r7, sp, #0 //mover el valor de sp a r7
 
-	str r0, [r7]
-	str r1, [r7, #4]
-	mov r3, #0x0
-	str r3, [r7, #8]
+	str r0, [r7] //respaldo de argumento de la función
+	str r1, [r7, #4] //respaldo de argumento de la función
+	mov r3, #0x0 
+	str r3, [r7, #8] //respaldo de argumento de la función 
 	mov r3, #10000
-	str r3, [r7, #12]
+	str r3, [r7, #12] //respaldo de argumento de la función
 	mov r5, #10
-	str r5, [r7, #16]
+	str r5, [r7, #16] //respaldo de argumento de la función
+	@ Cuerpo de la función  
 .loop:
 	ldr r3, [r7, #12]
 	udiv r4, r0, r3
@@ -159,51 +162,55 @@ int_to_string:
 	add r1, r1, r3
 	add r1, r1, #1
 	strb r4, [r1]
-
 	@ Epílogo de int_to_string
-	mov r3, #0
-	mov r0, r3
-	adds r7, r7, #36
-	mov sp, r7
-	pop {r7}
-	bx lr
+	mov r3, #0  
+	mov r0, r3 //el resultado de la funcion lo movemos a r0
+	adds r7, r7, #36 //los bytes reservados en el prologo lo sumamos a r7
+	mov sp, r7 //el valor del registro sp lo modvemos a r7
+	pop {r7} //recuperación del valor previo del registro r7
+	bx lr //retornar el control a la función invoncadora(main)
+
 
 display:
-	push {r7}
-	sub sp, sp, #12
-	add r7, sp, #0
-	str r0, [r7]
-
+	@ Prólogo
+	push {r7} //respaldo del apuntador del marco r7
+	sub sp, sp, #12 //Reserva de memoria multiplos de 8 
+	add r7, sp, #0 //mover el valor de sp a r7
+	str r0, [r7] //respaldo de argumento de la función
+	@ Cuerpo de la función  
 	mov r4, r7
 	ldr r1, [r7]
 	mov r0, #0x1
 	mov r7, #0x4	
 
 	mov r2, #0x8
-	svc 0x0
+	svc 0x0 //llamada al sistema 
 	
 	mov r3, r0
 	mov r7, r4
+	@ Epílogo
+	mov r0, r3 //el resultado de la funcion lo movemos a r0
+	adds r7, r7, #12  //los bytes reservados en el prologo lo sumamos a r7
+	mov sp, r7  //el valor del registro sp lo modvemos a r7
+	pop {r7} //recuperación del valor previo del registro r7
+	bx lr //retornar el control a la función invoncadora(main)
 
-	mov r0, r3
-	adds r7, r7, #12
-	mov sp, r7 
-	pop {r7}
-	bx lr
 
 media:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
 	@ link register save eliminated.
-	push	{r7}
-	sub	sp, sp, #20
-	add	r7, sp, #0
-	str	r0, [r7, #4]
-	str	r1, [r7] 
+	@ Prólogo
+	push	{r7} //respaldo del apuntador del marco r7
+	sub	sp, sp, #20 //Reserva de memoria multiplos de 8 
+	add	r7, sp, #0 //mover el valor de sp a r7
+	str	r0, [r7, #4] //respaldo de argumento de la función
+	str	r1, [r7]  //respaldo de argumento de la función
 	movs	r3, #0 @ sum = 0
-	str	r3, [r7, #8]
+	str	r3, [r7, #8] //respaldo de argumento de la función
 	movs	r3, #0 @ i = 0
-	str	r3, [r7, #12]
+	str	r3, [r7, #12] //respaldo de argumento de la función
+	@ Cuerpo de la función  
 	b	.L2
 .L3:
 	ldr	r3, [r7, #12]
@@ -225,12 +232,14 @@ media:
 	ldr	r2, [r7, #8]
 	ldr	r3, [r7]
 	sdiv	r3, r2, r3
-	mov	r0, r3
-	adds	r7, r7, #20
-	mov	sp, r7
+	@ Epílogo
+	mov	r0, r3 //el resultado de la funcion lo movemos a r0
+	adds	r7, r7, #20 //los bytes reservados en el prologo lo sumamos a r7
+	mov	sp, r7  //el valor del registro sp lo movemos a r7
 	@ sp needed
-	pop	{r7}
-	bx	lr
+	pop	{r7} //recuperación del valor previo del registro r7
+	bx	lr //retornar el control a la función invoncadora(main)
+
 	.size	media, .-media
 	.align	1
 	.global	ascii_to_int
@@ -250,23 +259,25 @@ media:
 	.fpu softvfp
 	.type	main, %function
 
+
 main:
 	@ args = 0, pretend = 0, frame = 56
 	@ frame_needed = 1, uses_anonymous_args = 0
-	push	{r7, lr}
-	sub	sp, sp, #56
-	add	r7, sp, #0
+	push	{r7, lr} //respaldo del apuntador del marco r7 y lr(función anidada)
+	sub	sp, sp, #56 //Reserva de memoria multiplos de 8 
+	add	r7, sp, #0 //mover el valor de sp a r7
 	ldr	r3, .L14
-	ldr	r3, [r3]
-	str	r3, [r7, #52]
+	ldr	r3, [r3] 
+	str	r3, [r7, #52] 
 	mov	r3,#0
 	movs	r3, #0
-	str	r3, [r7]
+	str	r3, [r7] 
+	@ Cuerpo de la función  
 	b	.L10
 .L11:
 	ldr r0, =first
 	ldr r1, =#0x6
-	bl read_user_input @ llamada a read_user_input
+	bl read_user_input @ llamada a read_user_input
 
 	ldr r0, =first
 	bl my_atoi
@@ -290,7 +301,7 @@ main:
 	mov	r0, r3
 	bl	media
 
-	@ Cálculamos la media
+	@ Cálculo de  la media
 	str	r0, [r7, #4]
 	ldr	r0, [r7, #4]
 	ldr r1, =sum
@@ -306,12 +317,16 @@ main:
 	mov	r2, #0
 	beq	.L13
 	bl	__stack_chk_fail
+
 .L13:
-	mov	r0, r3
-	adds	r7, r7, #56
-	mov	sp, r7
+	@ Epílogo
+	mov	r0, r3 //el resultado de la funcion lo movemos a r0
+	adds	r7, r7, #56 //los bytes reservados en el prologo lo sumamos a r7
+	mov	sp, r7 //el valor del registro sp lo movemos a r7
 	@ sp needed
-	pop	{r7, pc}
+	pop	{r7, pc} //recuperación del valor previo del registro r7 y 
+				//recuperación del contador de programa 
+
 .L15:
 	.align	2
 .L14:
@@ -324,4 +339,3 @@ main:
 		.skip 8
 	sum:
 		.skip 8
-
