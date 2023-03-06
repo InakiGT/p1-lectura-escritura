@@ -41,66 +41,66 @@ Teniendo un archivo con extension .c en este caso main.c procederemos a compilar
 #### my_atoi (conversion de ascii a entero)
 Tamaño del marco : **24 bytes**
 
-r7 -> 0
-vacío -> 4
-r2 -> 8
-r3 -> 12
-r6 -> 16
-r9 -> 20
-vacío ->24
+	r7 -> 0
+	vacío -> 4
+	r2 -> 8
+	r3 -> 12
+	r6 -> 16
+	r9 -> 20
+	vacío ->24
 		
 #### read_user_input (implementacion de printf)
 Tamaño del marco : **16 bytes**
 
-r7 -> 0
-vacío -> 4
-r0 -> 8
-r1 -> 12
+	r7 -> 0
+	vacío -> 4
+	r0 -> 8
+	r1 -> 12
 
 #### int_to_string
 Tamaño del marco : **40 bytes**
 
-r7 -> 0
-vacío -> 4
-r1 -> 8
-r3 -> 12
-r3 -> 16
-r5 -> 20
-r4 -> 24
-r6 -> 28
-r6 -> 32
+	r7 -> 0
+	vacío -> 4
+	r1 -> 8
+	r3 -> 12
+	r3 -> 16
+	r5 -> 20
+	r4 -> 24
+	r6 -> 28
+	r6 -> 32
 
 #### display (implementacion de scanf)
 Tamaño del marco : **16 bytes**
 
-r7 -> 0
-vacío -> 4
+	r7 -> 0
+	vacío -> 4
 
 ### media (cálculo de la media de un arreglo)
 Tamaño del marco : **24 bytes**
 
-r7 -> 0
-vacío -> 4
-r0: array -> 8
-r3: size -> 12
-r3: sum -> 16
-r3: i -> 20
+	r7 -> 0
+	vacío -> 4
+	r0: array -> 8
+	r3: size -> 12
+	r3: sum -> 16
+	r3: i -> 20
 
 #### main
 Tamaño del marco : **56 bytes**
 
-r7 -> 0
-vacío -> 4
-r3: numbers -> 8
-r3: numbers -> 12
-r3: numbers -> 16    
-r3: numbers -> 20
-r3: numbers -> 24
-r3: numbers-> 28
-r3: numbers -> 32
-r3: numbers -> 36
-r3: numbers -> 40
-r3: numbers -> 44
-r3: numbers -> 48
-r3: i -> 52
-r3: out -> 56
+	r7 -> 0
+	vacío -> 4
+	r3: numbers -> 8
+	r3: numbers -> 12
+	r3: numbers -> 16    
+	r3: numbers -> 20
+	r3: numbers -> 24
+	r3: numbers-> 28
+	r3: numbers -> 32
+	r3: numbers -> 36
+	r3: numbers -> 40
+	r3: numbers -> 44
+	r3: numbers -> 48
+	r3: i -> 52
+	r3: out -> 56
