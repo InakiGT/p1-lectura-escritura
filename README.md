@@ -73,7 +73,7 @@ r7 -> 0
 vacío -> 4
 
 ### media (cálculo de la media de un arreglo)
- Tamaño del marco : **24 bytes**
+Tamaño del marco : **24 bytes**
 r7 -> 0
 vacío -> 4
 r0: array -> 8
