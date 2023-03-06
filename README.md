@@ -39,24 +39,27 @@ Teniendo un archivo con extension .c en este caso main.c procederemos a compilar
 
 ## Marcos de funciones
 #### my_atoi (conversion de ascii a entero)
-Tamaño del marco :** 24 bytes**
-**r7 -> 0
+Tamaño del marco : **24 bytes**
+
+r7 -> 0
 vacío -> 4
 r2 -> 8
 r3 -> 12
 r6 -> 16
 r9 -> 20
-vacío ->24**
+vacío ->24
 		
 #### read_user_input (implementacion de printf)
 Tamaño del marco : **16 bytes**
-**r7 -> 0
+
+r7 -> 0
 vacío -> 4
 r0 -> 8
-r1 -> 12**
+r1 -> 12
 
 #### int_to_string
 Tamaño del marco : **40 bytes**
+
 r7 -> 0
 vacío -> 4
 r1 -> 8
@@ -68,12 +71,14 @@ r6 -> 28
 r6 -> 32
 
 #### display (implementacion de scanf)
-Tamaño del marco :** 16 bytes**
+Tamaño del marco : **16 bytes**
+
 r7 -> 0
 vacío -> 4
 
 ### media (cálculo de la media de un arreglo)
 Tamaño del marco : **24 bytes**
+
 r7 -> 0
 vacío -> 4
 r0: array -> 8
@@ -83,6 +88,7 @@ r3: i -> 20
 
 #### main
 Tamaño del marco : **56 bytes**
+
 r7 -> 0
 vacío -> 4
 r3: numbers -> 8
