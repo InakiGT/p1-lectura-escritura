@@ -10,13 +10,6 @@ int media(int array[], int size) {
     return sum / size;
 }
 
-int ascii_to_int(char number[]) {
-   int num = 0;
-   for (int i = 0; number[i] != '\0'; i++) {
-      num = num * 10 + (number[i] - '0');
-   }
-   return num;
-}
 
 int main() {
     int numbers[SIZE];
@@ -24,5 +17,5 @@ int main() {
         numbers[i] = 0;
     }
     int out = media(numbers, SIZE);
-    return ascii_to_int("12");
+    return 0;
 }
